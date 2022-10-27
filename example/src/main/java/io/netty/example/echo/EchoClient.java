@@ -52,16 +52,20 @@ public final class EchoClient {
         }
 
         // Configure the client.
+        // group netty 线程池
         EventLoopGroup group = new NioEventLoopGroup();
+
         try {
+            // 创建客户端实例 Bootstrap
             Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
+
+            b.group(group)                                                          // group
+             .channel(NioSocketChannel.class)                                       // channel   [connect()时创建]
              .option(ChannelOption.TCP_NODELAY, true)
-             .handler(new ChannelInitializer<SocketChannel>() {
+             .handler(new ChannelInitializer<SocketChannel>() {                     // handler
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ChannelPipeline p = ch.pipeline();
+                     ChannelPipeline p = ch.pipeline();                             // pipeline
                      if (sslCtx != null) {
                          p.addLast(sslCtx.newHandler(ch.alloc(), HOST, PORT));
                      }
@@ -70,8 +74,8 @@ public final class EchoClient {
                  }
              });
 
-            // Start the client.
-            ChannelFuture f = b.connect(HOST, PORT).sync();
+            // Start the client.      connect()     DefaultChannelPromise
+            ChannelFuture f = b.connect(HOST, PORT).sync();                         // future
 
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
@@ -80,4 +84,5 @@ public final class EchoClient {
             group.shutdownGracefully();
         }
     }
+
 }

@@ -15,9 +15,13 @@
  */
 package io.netty.example.echo;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
+import java.nio.charset.Charset;
 
 /**
  * Handler implementation for the echo server.
@@ -25,20 +29,42 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 @Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * 读取客户端数据
+     * @param msg 客户传的数据，转成 ByteBuf 读取数据
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ctx.write(msg);
+        // 将客户端的数据转成 string
+        ByteBuf byteBuf = (ByteBuf) msg;
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(bytes);
+        String text = new String(bytes, 0, bytes.length, Charset.forName("utf8"));
+        System.out.println("接收客户端消息：" + text);
+
+        // 将消息写回客户端
+        String response = "hello " + text;
+        ctx.writeAndFlush(Unpooled.copiedBuffer(response.getBytes()));
+        //ctx.write(Unpooled.copiedBuffer(response.getBytes()));
     }
 
+    /**
+     * 读取完成
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
+        //ctx.flush();
     }
 
+    /**
+     * 异常情况
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         // Close the connection when an exception is raised.
         cause.printStackTrace();
+        System.out.println(cause.getMessage());
         ctx.close();
     }
+
 }

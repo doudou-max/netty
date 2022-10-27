@@ -15,13 +15,7 @@
  */
 package io.netty.bootstrap;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.util.AttributeKey;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -91,6 +85,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
     }
 
     /**
+     * 客户端连接服务端
      * Connect a {@link Channel} to the remote peer.
      */
     public ChannelFuture connect(String inetHost, int inetPort) {
@@ -105,6 +100,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
     }
 
     /**
+     * 客户端连接服务端
      * Connect a {@link Channel} to the remote peer.
      */
     public ChannelFuture connect(SocketAddress remoteAddress) {
@@ -112,7 +108,10 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
             throw new NullPointerException("remoteAddress");
         }
 
+        // Bootstrap 对象基本属性参数校验
         validate();
+
+        // 执行连接
         return doConnect(remoteAddress, localAddress());
     }
 
@@ -128,9 +127,12 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
     }
 
     /**
+     * 执行连接
      * @see #connect()
      */
     private ChannelFuture doConnect(final SocketAddress remoteAddress, final SocketAddress localAddress) {
+
+        // 初始化和注册 channel，和 jdk 的 socketChanel 绑定
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -175,6 +177,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
         });
     }
 
+    /** 客户端 */
     @Override
     @SuppressWarnings("unchecked")
     void init(Channel channel) throws Exception {

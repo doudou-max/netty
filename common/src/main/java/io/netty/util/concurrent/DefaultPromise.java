@@ -32,6 +32,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DefaultPromise<V> extends AbstractFuture<V> implements Promise<V> {
+
     private static final InternalLogger logger = InternalLoggerFactory.getInstance(DefaultPromise.class);
     private static final InternalLogger rejectedExecutionLogger =
             InternalLoggerFactory.getInstance(DefaultPromise.class.getName() + ".rejectedExecution");

@@ -20,12 +20,17 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 
 /**
+ * netty 中使用比较多的接口，因为继承了 ChannelFuture、Promise，功能比较全面
+ *
  * Special {@link ChannelFuture} which is writable.
  */
 public interface ChannelPromise extends ChannelFuture, Promise<Void> {
 
+    /** 覆盖 ChannelFuture 中的 channel()，但是一点都没变 */
     @Override
     Channel channel();
+
+    // --- 下面几个方法是覆写 Promise 中的接口，为了返回值类型是 ChannelPromise ---
 
     @Override
     ChannelPromise setSuccess(Void result);
@@ -36,6 +41,8 @@ public interface ChannelPromise extends ChannelFuture, Promise<Void> {
 
     @Override
     ChannelPromise setFailure(Throwable cause);
+
+    // --- 下面几个方法重写也是为了得到 ChannelPromise 返回
 
     @Override
     ChannelPromise addListener(GenericFutureListener<? extends Future<? super Void>> listener);

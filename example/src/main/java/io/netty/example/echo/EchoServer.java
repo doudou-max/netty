@@ -32,10 +32,12 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 
 /**
  * Echoes back any received data from a client.
+ * netty server 端
  */
 public final class EchoServer {
 
     static final boolean SSL = System.getProperty("ssl") != null;
+
     static final int PORT = Integer.parseInt(System.getProperty("port", "8007"));
 
     public static void main(String[] args) throws Exception {
@@ -49,18 +51,22 @@ public final class EchoServer {
         }
 
         // Configure the server.
+        // bossGroup workerGroup netty 中的线程池
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+
         try {
+            // 创建服务端实例
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class)
-             .option(ChannelOption.SO_BACKLOG, 100)
+
+            b.group(bossGroup, workerGroup)                                         // group
+             .channel(NioServerSocketChannel.class)                                 // channel  [bind()时创建]
+             .option(ChannelOption.SO_BACKLOG, 100)                          // handler
              .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new ChannelInitializer<SocketChannel>() {
+             .childHandler(new ChannelInitializer<SocketChannel>() {                // childHandler
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ChannelPipeline p = ch.pipeline();
+                     ChannelPipeline p = ch.pipeline();                             // pipeline
                      if (sslCtx != null) {
                          p.addLast(sslCtx.newHandler(ch.alloc()));
                      }
@@ -69,8 +75,8 @@ public final class EchoServer {
                  }
              });
 
-            // Start the server.
-            ChannelFuture f = b.bind(PORT).sync();
+            // Start the server.      bind()
+            ChannelFuture f = b.bind(PORT).sync();                                  // future
 
             // Wait until the server socket is closed.
             f.channel().closeFuture().sync();

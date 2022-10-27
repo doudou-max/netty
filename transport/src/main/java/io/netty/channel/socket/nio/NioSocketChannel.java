@@ -51,6 +51,7 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
     private static final ChannelMetadata METADATA = new ChannelMetadata(false);
     private static final SelectorProvider DEFAULT_SELECTOR_PROVIDER = SelectorProvider.provider();
 
+    /** 创建 jdk 中的 SocketChannel */
     private static SocketChannel newSocket(SelectorProvider provider) {
         try {
             /**
@@ -59,6 +60,7 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
              *
              *  See <a href="https://github.com/netty/netty/issues/2308">#2308</a>.
              */
+            // openSocketChannel() 创建 SocketChannel 实例
             return provider.openSocketChannel();
         } catch (IOException e) {
             throw new ChannelException("Failed to open a socket.", e);
@@ -68,9 +70,12 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
     private final SocketChannelConfig config;
 
     /**
+     * 客户端 channel
      * Create a new instance
      */
     public NioSocketChannel() {
+        // newSocket() 创建 jdk nioSocketChannel
+        // this() 本类的构造方法
         this(newSocket(DEFAULT_SELECTOR_PROVIDER));
     }
 
@@ -95,7 +100,9 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
      * @param socket    the {@link SocketChannel} which will be used
      */
     public NioSocketChannel(Channel parent, SocketChannel socket) {
+        // 父类
         super(parent, socket);
+        // 实例化 NioSocketChannelConfig 实例，保存配置信息
         config = new NioSocketChannelConfig(this, socket.socket());
     }
 

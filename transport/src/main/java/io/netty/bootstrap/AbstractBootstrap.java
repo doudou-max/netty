@@ -93,6 +93,10 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     /**
+     * 设置 channelFactory 为 ReflectiveChannelFactory 的一个实例
+     *    通过 NioServerSocketChannel class 构建 BootstrapChannelFactory 对象，并且对象的属性 class 是 NioServerSocketChannel
+     *    将 BootstrapChannelFactory 对象赋值给当前的 Bootstrap 对象
+     *
      * The {@link Class} which is used to create {@link Channel} instances from.
      * You either use this or {@link #channelFactory(ChannelFactory)} if your
      * {@link Channel} implementation has no no-args constructor.
@@ -105,6 +109,8 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     /**
+     * 将 ChannelFactory 对象作为属性给到 当前的 Bootstrap 对象
+     *
      * {@link ChannelFactory} which is used to create {@link Channel} instances from
      * when calling {@link #bind()}. This method is usually only used if {@link #channel(Class)}
      * is not working for you because of some more complex needs. If your {@link Channel} implementation
@@ -237,6 +243,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     /**
+     * 服务端绑定端口
      * Create a new {@link Channel} and bind it.
      */
     public ChannelFuture bind(int inetPort) {
@@ -258,17 +265,24 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     /**
+     * 服务端绑定端口
      * Create a new {@link Channel} and bind it.
      */
     public ChannelFuture bind(SocketAddress localAddress) {
+
+        // 对象基本属性校验
         validate();
+
         if (localAddress == null) {
             throw new NullPointerException("localAddress");
         }
+
+        // 执行绑定
         return doBind(localAddress);
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
+        // 初始化和注册
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -304,10 +318,15 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         }
     }
 
+    /**
+     * 初始化和注册
+     */
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            // channel 实例化，调用 channel 的无参构造
             channel = channelFactory().newChannel();
+            // channel 初始化
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -320,6 +339,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        // 注册 selector
         ChannelFuture regFuture = group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {
@@ -481,6 +501,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             this.clazz = clazz;
         }
 
+        // 实例化 NioSocketChannel 或 NioServerSocketChannel，查看无参构造方法
         @Override
         public T newChannel() {
             try {
