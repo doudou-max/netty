@@ -59,6 +59,7 @@ public final class EchoServer {
             // 创建服务端实例
             ServerBootstrap b = new ServerBootstrap();
 
+            // 前面的一些操作都是给对象赋值，到下面的 bind() 才进行真正的操作
             b.group(bossGroup, workerGroup)                                         // group
              .channel(NioServerSocketChannel.class)                                 // channel  [bind()时创建]
              .option(ChannelOption.SO_BACKLOG, 100)                          // handler

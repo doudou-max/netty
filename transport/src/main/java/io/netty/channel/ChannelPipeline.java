@@ -20,6 +20,7 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 
+import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -214,6 +215,17 @@ import java.util.NoSuchElementException;
  * A {@link ChannelHandler} can be added or removed at any time because a {@link ChannelPipeline} is thread safe.
  * For example, you can insert an encryption handler when sensitive information is about to be exchanged, and remove it
  * after the exchange.
+ *
+ * ChannelPipeline 基类
+ *
+ * pipeline 是双向链表
+ *   Inbound：connect、write、flush，按照添加顺序执行每个 Inbound 类型的 handler
+ *   Outbound：accept、read，按照添加顺序反着执行 Outbound 类型的 handler
+ *
+ * 比如客户端在发起请求的时候，需要
+ *    connect 到服务器，然后 write 数据传到服务器，再然后 read 服务器返回的数据
+ *    前面的 connect 和 write 就是 out 事件，后面的 read 就是 in 事件
+ *
  */
 public interface ChannelPipeline
          extends Iterable<Entry<String, ChannelHandler>> {

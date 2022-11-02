@@ -18,6 +18,11 @@ package io.netty.channel;
 import java.net.SocketAddress;
 
 /**
+ * Inbound OutBound 适配器
+ * 通过这个类可以实现同时适配 Inbound OutBound
+ *
+ * Duplex：成对的
+ *
  * {@link ChannelHandler} implementation which represents a combination out of a {@link ChannelInboundHandler} and
  * the {@link ChannelOutboundHandler}.
  *

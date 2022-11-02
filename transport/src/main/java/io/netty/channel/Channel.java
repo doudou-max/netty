@@ -76,6 +76,10 @@ import java.net.SocketAddress;
  * It is important to call {@link #close()} or {@link #close(ChannelPromise)} to release all
  * resources once you are done with the {@link Channel}. This ensures all resources are
  * released in a proper way, i.e. filehandles.
+ *
+ * 一个 Channel 关联一个 pipeline，NioSocketChannel 和 NioServerSocketChannel 在执行构造方法的时候，
+ * 都会走到它们的父类 AbstractChannel 的构造方法中
+ *
  */
 public interface Channel extends AttributeMap, Comparable<Channel> {
 

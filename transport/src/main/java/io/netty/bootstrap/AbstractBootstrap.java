@@ -281,6 +281,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         return doBind(localAddress);
     }
 
+    /** 执行服务和端口绑定 */
     private ChannelFuture doBind(final SocketAddress localAddress) {
         // 初始化和注册
         final ChannelFuture regFuture = initAndRegister();
@@ -324,7 +325,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
-            // channel 实例化，调用 channel 的无参构造
+            // channel 实例化，调用 channel 的无参构造 (会调用对应实现类的构造方法，可以 debug 进去看)
             channel = channelFactory().newChannel();
             // channel 初始化
             init(channel);
@@ -396,6 +397,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         return localAddress;
     }
 
+    /** .channel(实现类) */
     final ChannelFactory<? extends C> channelFactory() {
         return channelFactory;
     }
@@ -501,7 +503,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             this.clazz = clazz;
         }
 
-        // 实例化 NioSocketChannel 或 NioServerSocketChannel，查看无参构造方法
+        /** 实例化 NioSocketChannel 或 NioServerSocketChannel，查看无参构造方法 */
         @Override
         public T newChannel() {
             try {

@@ -18,6 +18,8 @@ package io.netty.channel;
 import java.net.SocketAddress;
 
 /**
+ * 定义处理 Outbound 事件的 handler 需要实现 ChannelOutboundHandler
+ *
  * {@link ChannelHandler} which will get notified for IO-outbound-operations.
  */
 public interface ChannelOutboundHandler extends ChannelHandler {
