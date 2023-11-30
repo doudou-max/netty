@@ -22,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Handler implementation for the echo server.
@@ -39,7 +40,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf byteBuf = (ByteBuf) msg;
         byte[] bytes = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(bytes);
-        String text = new String(bytes, 0, bytes.length, Charset.forName("utf8"));
+        String text = new String(bytes, 0, bytes.length, StandardCharsets.UTF_8);
         System.out.println("接收客户端消息：" + text);
 
         // 将消息写回客户端

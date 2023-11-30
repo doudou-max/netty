@@ -362,6 +362,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         return regFuture;
     }
 
+    /** channel 初始化 ServerBootstrap Bootstrap */
     abstract void init(Channel channel) throws Exception;
 
     private static void doBind0(

@@ -47,6 +47,9 @@ import java.util.concurrent.ConcurrentMap;
  * </pre>
  * Be aware that this class is marked as {@link Sharable} and so the implementation must be safe to be re-used.
  *
+ * ChannelInitializer -> InboundHandler
+ *    作用和普通 handler 有点不一样，它纯碎是用来辅助将其他的 handler 加入到 pipeline 中的
+ *
  * @param <C>   A sub-type of {@link Channel}
  */
 @Sharable
